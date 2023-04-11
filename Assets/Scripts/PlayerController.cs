@@ -18,6 +18,11 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 10;
     public LayerMask groundLayer;
     public Animator anim;
+    public bool gameOver = false;
+
+    public GameObject playerModel;
+    public GameObject playerRagdoll;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +33,8 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!gameOver)
+        {
         h = DampenValue(h, moveDir.x);
         v = DampenValue(v, moveDir.y);
 
@@ -36,6 +43,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = inputVector;
         anim.SetFloat("Moving", moveDir.magnitude);
         Debug.DrawRay(transform.position, transform.forward * 7, Color.green);
+        }
     }
 
     public void MovePlayer(InputAction.CallbackContext ctx)
@@ -71,5 +79,13 @@ public class PlayerController : MonoBehaviour
     {
         float dist = GetComponent<Collider>().bounds.extents.y + 0.1f;
         Debug.DrawRay(transform.position, Vector3.down * dist, Color.blue);
+    }
+
+    public void playerDead()
+    {
+        gameObject.GetComponent<Collider>().enabled = false;
+        rb.useGravity = false;
+        playerModel.SetActive(false);
+        playerRagdoll.SetActive(true);
     }
 }
